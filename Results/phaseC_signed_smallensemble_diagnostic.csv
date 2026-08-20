@@ -1,0 +1,2 @@
+channel,note,n_draws,lambda_coh_worst,lambda_response,signed_only,slot0,slot1,slot2
+site_z_overrotation,small_ensemble_diagnostic,40,0.0004999999583255033,-0.7428739746230278,True,-0.3714369873113157,-0.3714369873114928,-2.1945286820386198e-13
