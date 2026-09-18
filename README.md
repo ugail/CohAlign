@@ -8,7 +8,7 @@ Training a variational quantum circuit means following gradients, and on real ha
 
 ## What does this measure?
 
-The headline findings, established in exact density-matrix simulation at eight qubits and validated against separately evaluated finite-difference derivatives on matched parameter ensembles, are:
+The headline findings, established in exact density-matrix simulation at eight and ten qubits on two circuit topologies and validated against separately evaluated finite-difference derivatives on matched parameter ensembles, are:
 
 1. **Operator contraction does not determine measured response.** An engineered correlated-dephasing control contracts the gradient-carrying operator mode at nearly the full worst-case rate (mode ratio 0.969) while the measured gradient degradation stays below 10⁻¹³ at every candidate parameter, exactly as the toolkit predicts from the generator and architecture alone.
 
@@ -16,13 +16,15 @@ The headline findings, established in exact density-matrix simulation at eight q
 
 3. **Signed coherent responses are captured, not just contraction.** A pure coherent site-dependent over-rotation gives a negative susceptibility of −0.584 on an enlarged matched ensemble of 400 draws, reproduced by the finite difference to 3.5 × 10⁻⁵, with a bootstrap interval excluding zero, so the framework measures gradient enhancement that no contraction metric can express.
 
-4. **The prediction is genuinely parameter resolved.** At depth four, where the light cone breaks the shallow-geometry degeneracy, fourteen parameter-and-channel pairs across seven distinct locations span susceptibilities from 2.73 to 9.36, every point agreeing with its matched finite difference at the probe bias, and the locations dephasing degrades fastest are precisely the ones the correlated control leaves most protected.
+4. **The prediction is genuinely parameter resolved.** At depth four, where the light cone breaks the shallow-geometry degeneracy, thirty-five parameter-and-channel pairs across seven distinct locations and five channels span susceptibilities from 2.73 to 27.4, a factor of ten, every point agreeing with its matched finite difference at its expected bias, and the locations dephasing degrades fastest are precisely the ones the correlated control leaves most protected.
 
-5. **The response rate organises finite-noise data far better than the worst-case rate.** The predicted alignment matches defect-windowed measurements with RMSE 0.009 across eight distinct channels, and in the secondary pooled regression the response model reaches R² 0.998 at the primary window against 0.83 for the worst-case rate, the improvement strengthening monotonically as the window tightens.
+5. **The identity transfers across architecture, system size and settings.** The same audit-versus-finite-difference comparison holds on an open-chain variant of the architecture, where the correlated control's zero-response prediction transfers with a finite-difference residual of 4 × 10⁻¹¹, at ten qubits in a reduced stated setting, and across varied initialisation widths, hopping backgrounds and readout sites, where the susceptibility genuinely moves with the readout, from 7.99 to 7.38, exactly as computed.
+
+6. **The response rate organises finite-noise data far better than the worst-case rate.** The predicted alignment matches defect-windowed measurements with RMSE 0.009 across eight distinct channels, and in the secondary pooled regression the response model reaches R² 0.998 at the primary window against 0.83 for the worst-case rate, the improvement strengthening monotonically as the window tightens.
 
 ## Contents
 
-- **`cohalign_pipeline_v1.8.1.ipynb`** — the full reproduction notebook. Materialises the package modules verbatim from its source cells, runs the twenty-two-check self-test battery, the validation ladder (recovery, zero-alignment control, direct finite-difference validation, parameter-resolved map, family comparison, regression, depth, two-excitation sector, cost benchmark), and renders every figure. Autodetects Google Colab against local execution and runs in three modes, a smoke mode completing in minutes, a paper mode reproducing the full study in roughly two hours on a standard cloud processor, and a figures mode re-rendering every figure from cached CSVs. Each phase caches its results, so an interrupted run resumes where it stopped.
+- **`cohalign_pipeline_v1.9.1.ipynb`** — the full reproduction notebook. Materialises the package modules verbatim from its source cells, runs the twenty-two-check self-test battery, the validation ladder (recovery, zero-alignment control, direct finite-difference validation, parameter-resolved map over five channels, a second architecture, a ten-qubit check, a settings robustness panel, a draws-convergence check, family comparison, regression, depth, two-excitation sector, cost benchmark), and renders every figure. Autodetects Google Colab against local execution and runs in three modes, a smoke mode completing in minutes, a paper mode reproducing the full study in roughly two hours on a standard cloud processor, and a figures mode re-rendering every figure from cached CSVs. Each phase caches its results, so an interrupted run resumes where it stopped.
 
 - **`verify_results.py`** — a quick verification script for reviewers. Loads the precomputed tables in `Results/` and confirms that every headline number in the paper is reproducible from those tables. Runs in a couple of seconds, needs no GPU, and prints a clean PASS/FAIL summary.
 
@@ -61,7 +63,7 @@ python scripts/quick_audit.py
 Re-running the full pipeline requires Python 3.10 or later. No GPU is needed; the toolkit is pure NumPy and runs on a standard CPU.
 
 ```
-jupyter notebook cohalign_pipeline_v1.8.1.ipynb
+jupyter notebook cohalign_pipeline_v1.9.1.ipynb
 ```
 
 The notebook autodetects whether it is running in Google Colab, where it mounts Drive and writes to the configured results folder, or locally, where it writes to `./cohalign_outputs`. Set the environment variable `COHALIGN_MODE` to `smoke`, `paper` or `figures`, or set the mode in the configuration cell. A paper-mode run reproduces the archived `Results/` from an empty output directory, including the run manifest, and a figures-mode session renders from cached CSVs without overwriting the record of the run that produced them.
