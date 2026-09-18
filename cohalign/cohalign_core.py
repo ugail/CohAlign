@@ -88,19 +88,34 @@ class Brickwork:
     INIT_SPREAD_SEED = 202   # fixed seed of the delocalised sector input
 
     def __init__(self, n: int, L: int, r: int = 1, init_state: str = "localized",
-                 spread_seed: int = None):
+                 spread_seed: int = None, topology: str = "ring",
+                 readout_site: int = 0):
         if n < 2:
             raise ValueError("need n >= 2")
         if init_state not in ("localized", "spread"):
             raise ValueError("init_state must be 'localized' or 'spread'")
+        if topology not in ("ring", "chain"):
+            raise ValueError("topology must be 'ring' or 'chain'")
+        if not 0 <= readout_site < n:
+            raise ValueError("readout_site out of range")
         self.n, self.L, self.r = n, L, r
         self.init_state_mode = init_state
+        self.topology = topology
+        self.readout_site = int(readout_site)
         self.spread_seed = int(spread_seed) if spread_seed is not None \
             else self.INIT_SPREAD_SEED
         self.dim = 2**n
-        self.E = [[j for j in range(n) if j % 2 == ell % 2] for ell in range(L)]
+        # edge j couples sites (j, (j+1) mod n); the chain variant drops the
+        # cycle-closing edge (n-1, 0), giving open boundaries and a second,
+        # genuinely different U(1)-equivariant architecture with the same
+        # gate set
+        self.E = [[j for j in range(n)
+                   if j % 2 == ell % 2 and (topology == "ring" or j < n - 1)]
+                  for ell in range(L)]
         self.P_r = sector_projector(n, r)
-        self.readout = self.P_r @ embed_one_qubit(PAULI_Z, 0, n) @ self.P_r
+        self.readout = (self.P_r
+                        @ embed_one_qubit(PAULI_Z, self.readout_site, n)
+                        @ self.P_r)
 
     # -- unitaries -----------------------------------------------------
     def z_layer(self, theta_ell: np.ndarray) -> np.ndarray:

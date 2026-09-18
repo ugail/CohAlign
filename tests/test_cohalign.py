@@ -113,3 +113,18 @@ def test_signed_channel_flagged_without_ratio():
 
 if __name__ == "__main__":
     sys.exit(pytest.main([__file__, "-v"]))
+
+
+def test_chain_topology_drops_cycle_edge():
+    ring = Brickwork(N, L, R, topology="ring")
+    chain = Brickwork(N, L, R, topology="chain")
+    for ell in range(L):
+        assert set(chain.E[ell]) == {j for j in ring.E[ell] if j < N - 1}
+    assert any(N - 1 in ring.E[ell] for ell in range(L))
+
+
+def test_readout_site_moves_the_readout():
+    m0 = Brickwork(N, L, R, readout_site=0)
+    m2 = Brickwork(N, L, R, readout_site=2)
+    assert not np.allclose(m0.readout, m2.readout)
+    assert np.allclose(m2.readout, m2.readout.conj().T)

@@ -46,13 +46,17 @@ check("Signed bootstrap interval excludes zero",
 # ---------------------------------------------------------------- Phase K
 k = pd.read_csv(RES / "phaseK_param_map.csv")
 kf = k[np.isfinite(k["rel_err"])]
-check("Parameter map: fourteen measurable parameter and channel pairs",
-      len(kf) == 14, f"{len(kf)} finite of {len(k)} recorded")
-check("Parameter map: every measurable point at the probe bias",
-      kf["rel_err"].max() < 1.1e-3, f"max {kf['rel_err'].max():.2e}")
+check("Parameter map: thirty-five measurable pairs over five channels",
+      len(kf) == 35 and kf["channel"].nunique() == 5,
+      f"{len(kf)} finite of {len(k)} recorded")
+check("Parameter map: every measurable point at its expected bias",
+      kf["rel_err"].max() < 3.1e-3
+      and kf[kf.channel == "amp_damp"]["rel_err"].max() < 1e-7,
+      f"max {kf['rel_err'].max():.2e}, amp damp "
+      f"{kf[kf.channel == 'amp_damp']['rel_err'].max():.1e}")
 spread = kf["lambda_resp"].max() / kf["lambda_resp"].min()
-check("Parameter map: susceptibilities span more than a factor of three",
-      spread > 3.0, f"{kf['lambda_resp'].min():.2f} to "
+check("Parameter map: susceptibilities span a factor of ten",
+      spread > 9.5, f"{kf['lambda_resp'].min():.2f} to "
       f"{kf['lambda_resp'].max():.2f}")
 dep = kf[kf.channel == "dephase"].set_index(["ell", "q"])["lambda_resp"]
 cor = kf[kf.channel == "corr_dephase"].set_index(["ell", "q"])["lambda_resp"]
@@ -117,12 +121,54 @@ check("Probe convergence: dephasing 3.960, 3.9960, 3.99960, 3.99996",
       np.allclose(dseq["lambda_coh"].values,
                   [3.960, 3.9960, 3.99960, 3.99996], atol=1e-4))
 
+# ---------------------------------------------------------------- Phase L
+l = pd.read_csv(RES / "phaseL_chain_arch.csv")
+check("Chain architecture: dephasing at the probe bias, amplitude damping "
+      "essentially exact",
+      abs(l[l.channel == "dephase"]["rel_err"].iloc[0] - 1.0e-3) < 1e-4
+      and l[l.channel == "amp_damp"]["rel_err"].iloc[0] < 1e-7)
+lc = l[l.channel == "corr_dephase"].iloc[0]
+check("Chain architecture: correlated control transfers, FD residual "
+      "below 1e-10 at predicted zero",
+      lc["lambda_resp"] == 0.0 and abs(lc["lambda_fd_extrap"]) < 1e-10,
+      f"|FD| {abs(lc['lambda_fd_extrap']):.1e}")
+
+# ---------------------------------------------------------------- Phase M
+m = pd.read_csv(RES / "phaseM_larger_system.csv")
+check("Ten qubits: dephasing at the probe bias, amplitude damping exact",
+      (m["setting"] == "ring_n10").all()
+      and abs(m[m.channel == "dephase"]["rel_err"].iloc[0] - 1.0e-3) < 1e-4
+      and m[m.channel == "amp_damp"]["rel_err"].iloc[0] < 1e-7)
+
+# ---------------------------------------------------------------- Phase N
+nrb = pd.read_csv(RES / "phaseN_robustness.csv")
+nf = nrb[np.isfinite(nrb["rel_err"])]
+check("Settings panel: every measurable row within 3.5e-4 of its matched "
+      "finite difference",
+      len(nf) == 10 and nf["rel_err"].max() < 3.6e-4,
+      f"{len(nf)} rows, max {nf['rel_err'].max():.2e}")
+rd = nrb[nrb.setting.str.startswith("readout_site")]
+check("Settings panel: second readout genuinely moves the dephasing "
+      "susceptibility from 7.99 to 7.38",
+      abs(rd[rd.channel == "dephase"]["lambda_resp"].iloc[0] - 7.3819) < 1e-3)
+
+# ---------------------------------------------------------------- Phase O
+o = pd.read_csv(RES / "phaseO_draws_convergence.csv")
+check("Draws convergence: estimate stable to nine digits from ten to "
+      "eighty draws for both channels",
+      all(g["lambda_resp"].max() - g["lambda_resp"].min() < 1e-9
+          for _, g in o.groupby("channel")))
+check("Draws convergence: bootstrap interval narrows with the draw count",
+      all(g.sort_values("n_theta")["ci_width"].iloc[-1]
+          < g.sort_values("n_theta")["ci_width"].iloc[0]
+          for _, g in o.groupby("channel")))
+
 # ---------------------------------------------------------------- manifest
 mf = json.load(open(RES / "paper_run_manifest.json"))
 check("Paper-run manifest present with module, CSV and figure hashes",
       mf.get("mode") == "paper"
       and len(mf.get("module_sha256_16", {})) == 3
-      and len(mf.get("output_csv_sha256_16", {})) >= 20
+      and len(mf.get("output_csv_sha256_16", {})) >= 24
       and len(mf.get("figure_sha256_16", {})) >= 8)
 
 print("=" * 72)

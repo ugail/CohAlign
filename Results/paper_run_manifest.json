@@ -9,9 +9,24 @@
   "fd_h_grid": "(2e-05, 5e-05, 0.0001, 0.0002)",
   "fd_signed_draws": "400",
   "pm_L": "4",
-  "pm_channels": "('dephase', 'corr_dephase')",
+  "pm_channels": "('dephase', 'corr_dephase', 'amp_damp', 'inhom_dephase', 'biased_pauli')",
   "pm_n_params": "12",
   "pm_h_grid": "(2e-05, 5e-05, 0.0001)",
+  "arch_channels": "('dephase', 'amp_damp', 'corr_dephase')",
+  "arch_h_grid": "(2e-05, 5e-05, 0.0001)",
+  "m10_n": "10",
+  "m10_L": "3",
+  "m10_channels": "('dephase', 'amp_damp')",
+  "m10_h_grid": "(5e-05, 0.0001)",
+  "m10_n_theta": "20",
+  "rb_channels": "('dephase', 'amp_damp')",
+  "rb_widths": "(0.02, 0.1)",
+  "rb_bg_seeds": "(43,)",
+  "rb_readout_sites": "(2,)",
+  "rb_h": "0.0001",
+  "rb_n_theta": "20",
+  "dc_n_thetas": "(10, 20, 40, 80)",
+  "dc_channels": "('dephase', 'amp_damp')",
   "gl_small": "(0.01, 0.03)",
   "n_theta_est": "40",
   "n_theta_meas": "30",
@@ -22,7 +37,7 @@
   "cost_ns": "(4, 6, 8)"
  },
  "module_sha256_16": {
-  "cohalign_core": "7c4c51d33511e1fa",
+  "cohalign_core": "0679ef41b5d3a531",
   "cohalign_rates": "5e6c3c0da620ca31",
   "cohalign_bench": "c75952f80c5abb88"
  },
@@ -47,7 +62,11 @@
   "phaseI_r2_sector.csv": "22f2a0700b5cff78",
   "phaseI_seed_stability.csv": "6455ef0bcb7c8a3e",
   "phaseJ_cost.csv": "0a9f105bed871240",
-  "phaseK_param_map.csv": "689550b5b5e28f7e"
+  "phaseK_param_map.csv": "654c44e5673da752",
+  "phaseL_chain_arch.csv": "323d31b416c525bd",
+  "phaseM_larger_system.csv": "bde47d12dfb9f87a",
+  "phaseN_robustness.csv": "e6a3e06087b51a89",
+  "phaseO_draws_convergence.csv": "821a4a25c9599f67"
  },
  "figure_sha256_16": {
   "fig1_recovery_control.png": "334d7da6b4895419",
@@ -55,7 +74,8 @@
   "fig3_prediction_and_regression.png": "2a06ea4dc0731980",
   "fig4_layer_resolved_depth.png": "f35c9351fb337a25",
   "fig5_r2_sector.png": "2f661a0b00769095",
-  "fig6_param_map.png": "fb7952e8c758a778",
+  "fig6_param_map.png": "e3b183054b546848",
+  "fig7_arch_size_validation.png": "749141f9bc2e1600",
   "figS1_alignment_ratio.png": "ac0c03ce80072635",
   "figS2_cost_benchmark.png": "12d517ef3ab1586e"
  },
@@ -63,9 +83,9 @@
  "processor": "x86_64",
  "logical_cores": 2,
  "ram_gb": 13.3,
- "python_version": "3.12.13",
- "numpy_version": "2.0.2",
+ "python_version": "3.13.15",
+ "numpy_version": "2.1.3",
  "pandas_version": "2.2.3",
  "matplotlib_version": "3.10.0",
- "timestamp": "2026-08-19 07:45:40"
+ "timestamp": "2026-09-18 10:50:45"
 }

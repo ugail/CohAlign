@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cohalign"
-version = "1.8.1"
+version = "1.9.1"
 description = "First-order noise susceptibility of the ensemble gradient second moment in equivariant quantum neural networks"
 readme = "README.md"
 license = { file = "LICENSE" }

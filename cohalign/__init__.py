@@ -21,4 +21,4 @@ from cohalign_rates import (          # noqa: E402,F401
 )
 from cohalign_core import build_channel_suite, Brickwork, teacher_background  # noqa: E402,F401
 
-__version__ = "1.8.1"
+__version__ = "1.9.1"
